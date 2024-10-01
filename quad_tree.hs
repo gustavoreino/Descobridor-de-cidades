@@ -128,11 +128,17 @@ checkName city myNode
 findCitiesInRadiusWithNode :: Double -> Node q -> Quadtree q -> [String]
 findCitiesInRadiusWithNode n myNode myQuadtree = findCitiesInRadius (latitude myNode) (longitude myNode) n myQuadtree
 
+removeCityName :: String -> [String] -> [String]
+removeCityName _ [] = []
+removeCityName city (h:arr) 
+    | city == h    = removeCityName city arr
+    | otherwise = h : removeCityName city arr
+
 findCitiesInRadiusOfCity :: String -> Double -> Quadtree q -> [String]
 findCitiesInRadiusOfCity city n myQuadtree =
     case checkName city (root myQuadtree) of
         Empty -> ["Cidade não encontrada"]
-        node  -> findCitiesInRadiusWithNode n node myQuadtree
+        node  -> removeCityName city (findCitiesInRadiusWithNode n node myQuadtree)
 
 theQuadtree = newQuadtree "Campo Mourão" (-24.046329) (-52.37802)
 theQuadtree2 = insertNode "Peabiru" (-23.9142123) (-52.3455598) theQuadtree
